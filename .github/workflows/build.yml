@@ -1,0 +1,21 @@
+name: Build Dylib
+on: [push]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Theos
+        run: |
+          export THEOS=~/theos
+          git clone --recursive https://github.com/theos/theos.git $THEOS
+      - name: Build
+        run: |
+          export THEOS=~/theos
+          export PATH=$THEOS/bin:$PATH
+          make
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: AutoLayer-dylib
+          path: .theos/obj/AutoLayer.dylib
