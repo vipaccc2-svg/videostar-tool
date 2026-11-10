@@ -5,14 +5,17 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      
       - name: Setup Theos
-        uses: Randomblock1/theos-action@v1
-        
+        run: |
+          export THEOS=$HOME/theos
+          git clone --recursive https://github.com/theos/theos.git $THEOS
+          git clone https://github.com/theos/sdks.git $THEOS/sdks
+          brew install ldid xz
       - name: Build
         run: |
+          export THEOS=$HOME/theos
+          export PATH=$THEOS/bin:$PATH
           make
-          
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
