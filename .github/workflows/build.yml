@@ -5,19 +5,30 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+      
       - name: Install Dependencies
+        run: brew install ldid xz wget
+        
+      - name: Download Theos
         run: |
-          brew install ldid xz
-      - name: Install Theos
+          mkdir -p $HOME/theos
+          wget -q https://github.com/theos/theos/archive/refs/heads/master.zip -O theos.zip
+          unzip -q theos.zip -d $HOME/
+          mv $HOME/theos-master/* $HOME/theos/
+          
+      - name: Download SDK
         run: |
-          export THEOS=~/theos
-          git clone --recursive https://github.com/theos/theos.git $THEOS
-          git clone https://github.com/theos/sdks.git $THEOS/sdks
+          wget -q https://github.com/theos/sdks/archive/refs/heads/master.zip -O sdks.zip
+          unzip -q sdks.zip -d $HOME/
+          mkdir -p $HOME/theos/sdks
+          mv $HOME/sdks-master/* $HOME/theos/sdks/
+          
       - name: Build
         run: |
-          export THEOS=~/theos
+          export THEOS=$HOME/theos
           export PATH=$THEOS/bin:$PATH
           make
+          
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
