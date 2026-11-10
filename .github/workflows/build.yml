@@ -5,10 +5,14 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: |
+          brew install ldid xz
       - name: Install Theos
         run: |
           export THEOS=~/theos
           git clone --recursive https://github.com/theos/theos.git $THEOS
+          git clone https://github.com/theos/sdks.git $THEOS/sdks
       - name: Build
         run: |
           export THEOS=~/theos
